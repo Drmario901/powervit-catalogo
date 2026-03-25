@@ -90,18 +90,20 @@ body {
   transition:
     opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     backdrop-filter 0.4s ease;
-  backdrop-filter: blur(0);
-  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
 }
 .viewer-overlay.viewer-visible {
   opacity: 1;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  /* El build minificado de dist puede eliminar la propiedad estándar si no está forzada.
+     Para asegurar UX consistente (Firefox y similares), duplicamos y forzamos con !important. */
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
 }
 .viewer-overlay.viewer-closing {
   opacity: 0;
-  backdrop-filter: blur(0);
-  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   transition: opacity 0.28s cubic-bezier(0.4, 0, 1, 1);
 }
 
@@ -541,18 +543,18 @@ body {
     opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
     backdrop-filter 0.35s ease;
   background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(0);
-  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
 }
 .chat-overlay.chat-overlay-visible {
   opacity: 1;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(10px) !important;
 }
 .chat-overlay.chat-overlay-closing {
   opacity: 0;
-  backdrop-filter: blur(0);
-  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   transition: opacity 0.22s ease-in;
 }
 
