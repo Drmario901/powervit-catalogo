@@ -1,0 +1,125 @@
+---
+import "../styles/global.css";
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_DEFAULT_TITLE,
+  SITE_DEFAULT_DESCRIPTION,
+  SITE_OG_IMAGE,
+  SITE_OG_IMAGE_WIDTH,
+  SITE_OG_IMAGE_HEIGHT,
+  SITE_OG_IMAGE_ALT,
+} from "../config/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = SITE_DEFAULT_TITLE,
+  description = SITE_DEFAULT_DESCRIPTION,
+  canonicalUrl = SITE_URL + "/",
+  ogImage = SITE_OG_IMAGE,
+  noindex = false,
+} = Astro.props;
+
+const absoluteOgImage = ogImage.startsWith("http") ? ogImage : SITE_URL + ogImage;
+const ogW = String(SITE_OG_IMAGE_WIDTH);
+const ogH = String(SITE_OG_IMAGE_HEIGHT);
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+
+		<!-- Favicon / PWA (archivos en /public) -->
+		<link rel="icon" href="/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<meta name="theme-color" content="#16A34A" />
+		<meta name="application-name" content={`${SITE_NAME} Catálogo`} />
+
+		<!-- SEO básico -->
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="author" content={SITE_NAME} />
+		<meta name="keywords" content="PowerVit, catálogo, suplementos, vitaminas, Venezuela, BCV, bienestar, catálogo online" />
+		{noindex ? (
+			<meta name="robots" content="noindex, nofollow" />
+		) : (
+			<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+		)}
+
+		<!-- Canonical -->
+		<link rel="canonical" href={canonicalUrl} />
+
+		<!-- Open Graph (Facebook, WhatsApp, LinkedIn, etc.) -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={absoluteOgImage} />
+		<meta property="og:image:secure_url" content={absoluteOgImage} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content={ogW} />
+		<meta property="og:image:height" content={ogH} />
+		<meta property="og:image:alt" content={SITE_OG_IMAGE_ALT} />
+		<meta property="og:locale" content="es_VE" />
+		<meta property="og:site_name" content={SITE_NAME} />
+
+		<!-- Twitter / X Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:url" content={canonicalUrl} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={absoluteOgImage} />
+		<meta name="twitter:image:alt" content={SITE_OG_IMAGE_ALT} />
+
+		<link rel="preload" href="/logo.png" as="image" type="image/png" />
+
+		<!-- Preconnect para carga rápida -->
+		<link rel="preconnect" href="https://api.mjeimports.store" crossorigin />
+		<link rel="dns-prefetch" href="https://api.mjeimports.store" />
+		<link rel="preconnect" href="https://powervit.fit" crossorigin />
+		<link rel="dns-prefetch" href="https://powervit.fit" />
+		<link rel="preconnect" href="https://catalogo.powervit.fit" crossorigin />
+		<link rel="dns-prefetch" href="https://catalogo.powervit.fit" />
+
+		<!-- Sitemap para crawlers -->
+		<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+	</head>
+	<body>
+		<script is:inline>
+			try {
+				var t = localStorage.getItem('powervit-catalog-theme') || localStorage.getItem('mje-catalog-theme');
+				if (t === 'light' || t === 'dark') {
+					document.documentElement.classList.add('theme-' + t);
+				} else {
+					var prefersLight = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+					document.documentElement.classList.add(prefersLight ? 'theme-light' : 'theme-dark');
+				}
+			} catch (_) {
+				document.documentElement.classList.add('theme-dark');
+			}
+		</script>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		min-height: 100%;
+	}
+</style>

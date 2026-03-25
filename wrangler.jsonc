@@ -1,0 +1,10 @@
+{
+  "name": "catalogo-mjeimports",
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2026-02-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  }
+}

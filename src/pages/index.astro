@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Catalog from '../components/Catalog';
+import { getCatalogo, getOfertas, reescribirImagenesCatalogo } from '../lib/api';
+import type { ProductoCatalogo } from '../types/catalogo';
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_DEFAULT_TITLE,
+  SITE_DEFAULT_DESCRIPTION,
+  MAIN_SITE_URL,
+} from '../config/site';
+
+// SSR: esta página se renderiza en el servidor en cada request
+export const prerender = false;
+
+const url = Astro.url;
+const searchQuery = url.searchParams.get('q')?.trim() ?? undefined;
+
+let data;
+let ofertas: ProductoCatalogo[] = [];
+let ofertaTasaBcv: number | null = null;
+try {
+  const [rawCatalogo, rawOfertas] = await Promise.all([
+    getCatalogo({ page: 1, per_page: 12, search: searchQuery }),
+    getOfertas(),
+  ]);
+  data = reescribirImagenesCatalogo(rawCatalogo);
+  ofertas = reescribirImagenesCatalogo(rawOfertas).productos;
+  ofertaTasaBcv = rawOfertas.tasa_bcv ?? null;
+} catch (err) {
+  data = {
+    tasa_bcv: null,
+    fecha: null,
+    search: null,
+    productos: [],
+    pagination: {
+      current_page: 1,
+      last_page: 1,
+      per_page: 12,
+      total: 0,
+      from: null,
+      to: null,
+      first_page_url: '',
+      last_page_url: '',
+      next_page_url: null,
+      prev_page_url: null,
+    },
+  };
+}
+
+const totalProducts = data.pagination?.total ?? data.productos.length;
+const itemListElements = data.productos.slice(0, 12).map((p, i) => ({
+  '@type': 'ListItem',
+  position: i + 1,
+  name: p.producto,
+}));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${MAIN_SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: MAIN_SITE_URL,
+      sameAs: [MAIN_SITE_URL],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: `${SITE_NAME} — Catálogo`,
+      description: SITE_DEFAULT_DESCRIPTION,
+      inLanguage: 'es-VE',
+      publisher: { '@id': `${MAIN_SITE_URL}/#organization` },
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: { '@type': 'EntryPoint', urlTemplate: `${SITE_URL}/?q={search_term_string}` },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/#webpage`,
+      url: `${SITE_URL}/`,
+      name: SITE_DEFAULT_TITLE,
+      description: SITE_DEFAULT_DESCRIPTION,
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+      about: { '@id': `${MAIN_SITE_URL}/#organization` },
+    },
+    ...(itemListElements.length > 0
+      ? [
+          {
+            '@type': 'ItemList',
+            '@id': `${SITE_URL}/#itemlist-home`,
+            name: 'Productos del catálogo',
+            numberOfItems: itemListElements.length,
+            itemListElement: itemListElements,
+          },
+        ]
+      : []),
+  ],
+};
+---
+
+<Layout
+  title={SITE_DEFAULT_TITLE}
+  description={SITE_DEFAULT_DESCRIPTION}
+  canonicalUrl={`${SITE_URL}/`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <h1 class="sr-only">{SITE_DEFAULT_TITLE}</h1>
+  <p class="sr-only">
+    {SITE_DEFAULT_DESCRIPTION}
+    {totalProducts > 0 ? ` Aproximadamente ${totalProducts} productos listados.` : ''}
+  </p>
+  <Catalog
+    data={data}
+    initialSearch={searchQuery ?? ''}
+    initialOfertas={ofertas}
+    initialTasaBcv={ofertaTasaBcv}
+    client:idle
+  />
+</Layout>

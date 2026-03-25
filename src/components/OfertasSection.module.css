@@ -1,0 +1,447 @@
+/* Solo estilos de la sección Productos en oferta. No afectan al resto del sitio. */
+
+.ofertasSection {
+  margin-bottom: 1.5rem;
+}
+@media (min-width: 640px) {
+  .ofertasSection {
+    margin-bottom: 2rem;
+  }
+}
+
+.ofertasHeader {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 640px) {
+  .ofertasHeader {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.ofertasTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+@media (min-width: 640px) {
+  .ofertasTitle {
+    font-size: 1.875rem;
+  }
+}
+@media (min-width: 1024px) {
+  .ofertasTitle {
+    font-size: 1.625rem;
+  }
+}
+
+.ofertasSubtitle {
+  margin-top: 0.25rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+@media (min-width: 1024px) {
+  .ofertasSubtitle {
+    font-size: 0.875rem;
+  }
+}
+
+.ofertasTasaBcv {
+  margin-top: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+
+.ofertasSeparator {
+  margin-top: 1rem;
+  height: 1px;
+  border: none;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--card-border) 15%,
+    var(--card-border) 85%,
+    transparent
+  );
+  opacity: 0.8;
+}
+
+/* Responsive: scroll horizontal hasta md; desde md grid */
+.ofertasGrid {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--card-border) transparent;
+}
+.ofertasGrid::-webkit-scrollbar {
+  height: 6px;
+}
+.ofertasGrid::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ofertasGrid::-webkit-scrollbar-thumb {
+  background-color: var(--card-border);
+  border-radius: 3px;
+}
+@media (min-width: 768px) {
+  .ofertasGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    justify-content: stretch;
+    width: 100%;
+    overflow: visible;
+    padding-bottom: 0;
+    scroll-snap-type: none;
+    gap: 1.25rem;
+  }
+}
+
+.ofertasCard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 1rem;
+  background-color: var(--card-oferta-bg);
+  border: 1px solid var(--card-oferta-border);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex: 0 0 280px;
+  min-width: 280px;
+  scroll-snap-align: start;
+  /* Altura fija en scroll horizontal para que todas las cards sean iguales */
+  height: 420px;
+}
+@media (min-width: 768px) {
+  .ofertasCard {
+    flex: none;
+    min-width: 0;
+    scroll-snap-align: none;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .ofertasCardImageWrap {
+    height: 160px;
+  }
+}
+.ofertasCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.15), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.ofertasCardImageWrap {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background-color: var(--input-bg);
+}
+.ofertasCardImageWrap:focus-within {
+  outline: 2px solid var(--color-brand-green);
+  outline-offset: -2px;
+}
+
+.ofertasCardImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.25s ease;
+}
+.ofertasCard:hover .ofertasCardImg {
+  transform: scale(1.05);
+}
+
+.ofertasBadge {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 9999px;
+  background-color: var(--color-badge-accent-bg);
+  color: var(--color-badge-accent-text);
+  border: 1px solid var(--color-badge-accent-border);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+}
+@media (min-width: 768px) {
+  .ofertasBadge {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+  }
+}
+
+.ofertasCardBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  justify-content: space-between;
+  padding: 1rem;
+}
+@media (min-width: 768px) {
+  .ofertasCardBody {
+    padding: 0.75rem 0.875rem;
+  }
+}
+
+.ofertasCardTitle {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--text-primary);
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .ofertasCardTitle {
+    font-size: 1.125rem;
+  }
+}
+@media (min-width: 768px) {
+  .ofertasCardTitle {
+    font-size: 0.9375rem;
+    line-height: 1.3;
+  }
+}
+
+.ofertasPrices {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+@media (min-width: 768px) {
+  .ofertasPrices {
+    margin-top: 0.5rem;
+    gap: 0.125rem;
+  }
+}
+
+/* Precio principal: dólares BCV (grande, verde) */
+.ofertasPriceDollar {
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-brand-green);
+  line-height: 1.2;
+}
+@media (min-width: 640px) {
+  .ofertasPriceDollar {
+    font-size: 1.5rem;
+  }
+}
+@media (min-width: 768px) {
+  .ofertasPriceDollar {
+    font-size: 1.25rem;
+  }
+}
+
+/* Equivalente en Bs (legible, negrita, secundario) */
+.ofertasPriceEquiv {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+@media (min-width: 768px) {
+  .ofertasPriceEquiv {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Compatibilidad con estilos existentes si se usan en otro sitio */
+.ofertasPriceBs {
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-brand-green);
+}
+.ofertasPriceBcvLine {
+  white-space: nowrap;
+}
+.ofertasPriceBcv {
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--card-oferta-bcv);
+}
+.ofertasBcvTag {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--card-oferta-bcv);
+}
+
+.ofertasCtaWrap {
+  margin-top: 1rem;
+}
+@media (min-width: 768px) {
+  .ofertasCtaWrap {
+    margin-top: 0.625rem;
+  }
+}
+
+.ofertasBtn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+@media (min-width: 768px) {
+  .ofertasBtn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+  }
+}
+.ofertasBtn:focus-visible {
+  outline: 2px solid var(--color-brand-green);
+  outline-offset: 2px;
+}
+.ofertasBtnPrimary {
+  background-color: var(--color-brand-green);
+  color: #ffffff;
+}
+.ofertasBtnPrimary:hover {
+  filter: brightness(1.08);
+}
+.ofertasBtnPrimary:active {
+  filter: brightness(0.95);
+}
+.ofertasBtnOutline {
+  background-color: transparent;
+  color: var(--color-brand-green);
+  border: 1.5px solid var(--color-brand-green);
+}
+.ofertasBtnOutline:hover {
+  filter: brightness(1.1);
+}
+
+/* Skeleton: mismo layout que ofertas (scroll horizontal < 768px, luego grid) */
+.ofertasSkeletonGrid {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--card-border) transparent;
+}
+.ofertasSkeletonGrid::-webkit-scrollbar {
+  height: 6px;
+}
+.ofertasSkeletonGrid::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ofertasSkeletonGrid::-webkit-scrollbar-thumb {
+  background-color: var(--card-border);
+  border-radius: 3px;
+}
+.ofertasSkeletonCard {
+  scroll-snap-align: start;
+  flex: 0 0 min(280px, 85vw);
+  min-width: min(280px, 85vw);
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: var(--card-oferta-bg);
+  border: 1px solid var(--card-oferta-border);
+}
+@media (min-width: 768px) {
+  .ofertasSkeletonGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    justify-content: stretch;
+    width: 100%;
+    overflow: visible;
+    padding-bottom: 0;
+    scroll-snap-type: none;
+    gap: 1.25rem;
+  }
+  .ofertasSkeletonCard {
+    flex: none;
+    min-width: unset;
+    height: auto;
+  }
+}
+
+.ofertasSkeletonImage {
+  width: 100%;
+  height: 200px;
+  background-color: var(--input-bg);
+  animation: ofertasSkeletonPulse 1.5s ease-in-out infinite;
+}
+@media (min-width: 768px) {
+  .ofertasSkeletonImage {
+    height: 160px;
+  }
+}
+
+.ofertasSkeletonBody {
+  padding: 1rem;
+}
+@media (min-width: 768px) {
+  .ofertasSkeletonBody {
+    padding: 0.75rem 0.875rem;
+  }
+}
+
+.ofertasSkeletonLine {
+  height: 0.875rem;
+  border-radius: 0.25rem;
+  background-color: var(--input-bg);
+  animation: ofertasSkeletonPulse 1.5s ease-in-out infinite;
+}
+.ofertasSkeletonLineTitle {
+  width: 95%;
+  margin-bottom: 0.5rem;
+}
+.ofertasSkeletonLinePrice {
+  width: 50%;
+  margin-bottom: 0.75rem;
+}
+.ofertasSkeletonLineBtn {
+  width: 100%;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+}
+
+@keyframes ofertasSkeletonPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

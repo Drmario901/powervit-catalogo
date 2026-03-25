@@ -1,0 +1,801 @@
+@import "tailwindcss";
+
+/* Marca PowerVit: verde #16A34A, blanco y negro */
+:root {
+  --color-brand-green: #16a34a;
+  --color-on-brand: #ffffff;
+  --color-brand-ink: #0a0a0a;
+  --color-brand-green-muted: #14532d;
+  --color-price-bcv: #facc15;
+  /* Badges “En oferta” (contraste con el verde de marca) */
+  --color-badge-accent-bg: #ea580c;
+  --color-badge-accent-text: #ffffff;
+  --color-badge-accent-border: rgba(234, 88, 12, 0.55);
+}
+
+/* Solo lectores de pantalla / SEO */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Tema oscuro por defecto (evita flash antes de hidratación) */
+:root,
+.theme-dark {
+  --page-bg: #0a0a0a;
+  --card-bg: #141414;
+  --card-border: #2a2a2a;
+  --card-oferta-bg: #0f1712;
+  --card-oferta-border: rgba(22, 163, 74, 0.45);
+  --card-oferta-bcv: #d4d4d4;
+  --titulo-oferta-bg: rgba(22, 163, 74, 0.12);
+  --titulo-oferta-text: #86efac;
+  --text-primary: #fafafa;
+  --text-secondary: #a3a3a3;
+  --header-bg: #0f0f0f;
+  --input-bg: #1a1a1a;
+  --input-border: #404040;
+  --chat-muted-bg: #1a1a1a;
+  --chat-foreground: #f5f5f5;
+  --chat-muted-foreground: #a3a3a3;
+  --chat-border: #333333;
+}
+
+/* Tema claro */
+.theme-light {
+  --page-bg: #fafafa;
+  --card-bg: #ffffff;
+  --card-border: #e5e5e5;
+  --card-oferta-bg: #f0fdf4;
+  --card-oferta-border: rgba(22, 163, 74, 0.35);
+  --card-oferta-bcv: #166534;
+  --titulo-oferta-bg: #dcfce7;
+  --titulo-oferta-text: #15803d;
+  --text-primary: #0a0a0a;
+  --text-secondary: #525252;
+  --header-bg: #ffffff;
+  --input-bg: #f5f5f5;
+  --input-border: #d4d4d4;
+  --chat-muted-bg: #f5f5f5;
+  --chat-foreground: #0a0a0a;
+  --chat-muted-foreground: #525252;
+  --chat-border: #e5e5e5;
+}
+
+/* Fondo de página según tema (evita blanco por defecto en modo oscuro) */
+html {
+  font-size: 16px;
+}
+body {
+  background-color: var(--page-bg);
+  font-size: 1rem;
+}
+
+/* Título "Productos en oferta" destacado en ambos temas (sin fondo) */
+.titulo-oferta {
+  color: var(--titulo-oferta-text);
+}
+
+/* Visor de producto (modal): overlay con blur */
+.viewer-overlay {
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.78);
+  transition:
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 0.4s ease;
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+}
+.viewer-overlay.viewer-visible {
+  opacity: 1;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.viewer-overlay.viewer-closing {
+  opacity: 0;
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  transition: opacity 0.28s cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Panel modal: móvil = sheet desde abajo; md+ = centrado */
+.viewer-content {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0) scale(0.94);
+  transform-origin: center bottom;
+  transition:
+    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+@media (min-width: 768px) {
+  .viewer-content {
+    transform: translate3d(0, 20px, 0) scale(0.96);
+    transform-origin: center center;
+  }
+}
+.viewer-content.viewer-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+.viewer-content.viewer-closing {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0) scale(0.97);
+  transition:
+    opacity 0.28s cubic-bezier(0.4, 0, 1, 1),
+    transform 0.28s cubic-bezier(0.4, 0, 1, 1);
+}
+@media (min-width: 768px) {
+  .viewer-content.viewer-closing {
+    transform: translate3d(0, 12px, 0) scale(0.98);
+  }
+}
+
+.viewer-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.06),
+    0 25px 50px -12px rgb(0 0 0 / 0.45),
+    0 0 80px -20px rgb(22 163 74 / 0.15);
+}
+
+.theme-light .viewer-panel {
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.06),
+    0 25px 50px -12px rgb(0 0 0 / 0.18),
+    0 0 60px -24px rgb(22 163 74 / 0.12);
+}
+
+.viewer-close-btn {
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.2s ease;
+}
+.viewer-close-btn:hover {
+  transform: scale(1.06);
+}
+.viewer-close-btn:active {
+  transform: scale(0.96);
+}
+
+/* Móvil: imagen legible sin robar espacio al contenido */
+.viewer-hero {
+  position: relative;
+  flex-shrink: 0;
+  height: clamp(10rem, 32vh, 15rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(165deg, var(--input-bg) 0%, var(--card-bg) 100%);
+}
+@media (min-width: 768px) {
+  .viewer-hero {
+    height: auto;
+    min-height: 0;
+    min-width: 0;
+    flex: 1 1 46%;
+    max-width: min(420px, 48%);
+    align-self: stretch;
+  }
+}
+.viewer-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--card-bg) 0%, transparent 50%);
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .viewer-hero::after {
+    background: linear-gradient(to right, transparent 30%, var(--card-bg) 100%);
+  }
+}
+.viewer-hero img {
+  position: relative;
+  z-index: 1;
+  max-height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (min-width: 768px) {
+  .viewer-hero img {
+    height: 100%;
+    width: 100%;
+    max-height: min(88vh, 800px);
+    object-fit: contain;
+    padding: 1rem;
+  }
+  .viewer-panel:hover .viewer-hero img {
+    transform: scale(1.02);
+  }
+}
+
+/* Columna datos: móvil = alto natural (sin flex-grow fantasma); md+ = columna scroll interno */
+.viewer-details-col {
+  display: flex;
+  min-width: 0;
+  flex: 0 1 auto;
+  flex-direction: column;
+  overflow: visible;
+  justify-content: flex-start;
+}
+@media (min-width: 768px) {
+  .viewer-details-col {
+    flex: 1 1 54%;
+    max-width: 52%;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    justify-content: flex-start;
+  }
+}
+
+.viewer-mobile-meta {
+  flex: 0 0 auto;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+@media (min-width: 768px) {
+  .viewer-mobile-meta {
+    flex: 0 1 auto;
+    min-height: 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+}
+
+.viewer-mobile-footer {
+  flex: 0 0 auto;
+}
+
+.viewer-mobile-actions {
+  flex: 0 0 auto;
+}
+
+.viewer-mobile-chat {
+  flex: 0 0 auto;
+}
+
+@keyframes viewerDetailReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.viewer-detail-reveal {
+  opacity: 0;
+}
+.viewer-content.viewer-visible .viewer-detail-reveal {
+  animation: viewerDetailReveal 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.viewer-stagger-1 {
+  animation-delay: 0.06s !important;
+}
+.viewer-stagger-2 {
+  animation-delay: 0.12s !important;
+}
+.viewer-stagger-3 {
+  animation-delay: 0.18s !important;
+}
+.viewer-stagger-4 {
+  animation-delay: 0.24s !important;
+}
+
+.viewer-price-card {
+  border-radius: 0.875rem;
+  padding: 0.75rem 0.875rem;
+  background: linear-gradient(135deg, rgb(22 163 74 / 0.12) 0%, rgb(22 163 74 / 0.04) 100%);
+  border: 1px solid rgb(22 163 74 / 0.2);
+}
+@media (min-width: 768px) {
+  .viewer-price-card {
+    border-radius: 1rem;
+    padding: 1rem 1.125rem;
+  }
+}
+
+.theme-light .viewer-price-card {
+  background: linear-gradient(135deg, rgb(240 253 244) 0%, rgb(255 255 255) 100%);
+  border-color: rgb(22 163 74 / 0.25);
+}
+
+.viewer-action-btn {
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+.viewer-action-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgb(22 163 74 / 0.25);
+}
+.viewer-action-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.viewer-chat-strip {
+  background: linear-gradient(180deg, var(--card-bg) 0%, var(--input-bg) 100%);
+}
+
+/* Tarjetas del catálogo: sombra y anillo sutiles */
+.catalog-product-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.05),
+    0 4px 16px rgb(0 0 0 / 0.06);
+  transition:
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.theme-dark .catalog-product-card {
+  box-shadow:
+    0 2px 8px rgb(0 0 0 / 0.35),
+    0 0 0 1px rgb(255 255 255 / 0.06);
+}
+.theme-dark .catalog-product-card:hover {
+  box-shadow:
+    0 12px 40px rgb(0 0 0 / 0.55),
+    0 0 0 1px rgb(22 163 74 / 0.28);
+}
+.theme-light .catalog-product-card:hover {
+  box-shadow:
+    0 12px 32px rgb(0 0 0 / 0.1),
+    0 0 0 1px rgb(22 163 74 / 0.18);
+}
+
+/* Cabecera: sombra suave al hacer scroll (opcional, sin JS) */
+.catalog-header {
+  transition:
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease;
+}
+
+/* Animación tipo SPA al cambiar de página del catálogo */
+@keyframes catalog-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.catalog-page-transition {
+  animation: catalog-page-in 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Entrada de tarjetas del grid */
+@keyframes catalog-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.catalog-card-in {
+  animation: catalog-card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-page-transition,
+  .catalog-card-in,
+  .animate-cart-fab-hint-in,
+  .animate-chat-fab-hint-in {
+    animation: none !important;
+  }
+  .catalog-card-in {
+    opacity: 1;
+    transform: none;
+  }
+  .viewer-overlay,
+  .viewer-content {
+    transition-duration: 0.01ms !important;
+  }
+  .viewer-content.viewer-visible .viewer-detail-reveal {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .viewer-panel:hover .viewer-hero img {
+    transform: none;
+  }
+}
+
+/* Sentinel de “cargar más”: altura fija y transición para evitar parpadeo */
+.catalog-load-more-sentinel {
+  min-height: 5rem;
+}
+
+.catalog-load-more-spinner {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.catalog-load-more-spinner.catalog-load-more-spinner-visible {
+  opacity: 1;
+}
+
+/* Animación del botón flotante del carrito (el círculo verde con el número) */
+@keyframes cart-fab-bounce {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.25);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  75% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes cart-fab-badge-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.4);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cart-fab.cart-fab-bounce {
+  animation: cart-fab-bounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cart-fab-badge.cart-fab-badge-pop {
+  animation: cart-fab-badge-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Mensaje junto al botón del carrito: "Aquí está tu carrito, ábrelo para consultar" */
+@keyframes cart-fab-hint-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-cart-fab-hint-in {
+  animation: cart-fab-hint-in 0.35s ease-out forwards;
+}
+
+/* Hint del botón del chat (a la izquierda): "Consulta tus dudas aquí" */
+@keyframes chat-fab-hint-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-chat-fab-hint-in {
+  animation: chat-fab-hint-in 0.35s ease-out forwards;
+}
+
+/* Llamado de atención suave en el FAB del chat */
+@keyframes chat-fab-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(22, 163, 74, 0.12);
+  }
+}
+
+.chat-fab-attention {
+  animation: chat-fab-glow 2s ease-in-out infinite;
+}
+
+.chat-fab-attention:hover,
+.chat-fab-attention:focus-visible {
+  animation: none;
+}
+
+/* Asistente: overlay con blur */
+.chat-overlay {
+  opacity: 0;
+  transition:
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 0.35s ease;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+}
+.chat-overlay.chat-overlay-visible {
+  opacity: 1;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.chat-overlay.chat-overlay-closing {
+  opacity: 0;
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  transition: opacity 0.22s ease-in;
+}
+
+/* Móvil: sube desde abajo · Escritorio: entra desde la izquierda (FAB) */
+.chat-panel {
+  opacity: 0;
+  transform: translate3d(0, 100%, 0);
+  transition:
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+.chat-panel.chat-panel-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.chat-panel.chat-panel-closing {
+  opacity: 0;
+  transform: translate3d(0, 100%, 0);
+  transition:
+    opacity 0.26s cubic-bezier(0.4, 0, 1, 1),
+    transform 0.26s cubic-bezier(0.4, 0, 1, 1);
+}
+@media (min-width: 640px) {
+  .chat-panel {
+    transform: translate3d(-28px, 0, 0) scale(0.96);
+    transform-origin: left center;
+  }
+  .chat-panel.chat-panel-visible {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  .chat-panel.chat-panel-closing {
+    transform: translate3d(-20px, 0, 0) scale(0.98);
+  }
+}
+
+.chat-assistant-fab {
+  box-shadow: 0 8px 24px rgb(22 163 74 / 0.35);
+}
+
+@keyframes chat-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.chat-message-bubble {
+  animation: chat-msg-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-overlay {
+    transition-duration: 0.01ms !important;
+  }
+  .chat-panel {
+    transition-duration: 0.01ms !important;
+  }
+  .chat-message-bubble {
+    animation: none !important;
+  }
+}
+
+/* Spinner de carga (cambio de página) */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Typing indicator — puntos animados (estilo shadcn-chatbot-kit) */
+@keyframes typing-dot-bounce {
+  0%,
+  40% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-0.25rem);
+  }
+}
+
+.chat-typing-dot {
+  animation: typing-dot-bounce 1.25s ease-out infinite;
+}
+.chat-typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.chat-typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Chat: contraste y legibilidad en modo oscuro */
+.chat-bubble-assistant {
+  background-color: var(--chat-muted-bg);
+  color: var(--chat-foreground);
+  border-color: var(--chat-border);
+}
+.chat-bubble-assistant strong {
+  color: var(--chat-foreground);
+}
+
+/* Animación popup carrito / lista de consulta */
+.consulta-popup-overlay {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+.consulta-popup-overlay.consulta-popup-visible {
+  opacity: 1;
+}
+.consulta-popup-content {
+  opacity: 0;
+  transform: scale(0.92) translateY(10px);
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+.consulta-popup-content.consulta-popup-visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* Bottom sheet: calculadora tasa de cambio */
+.tasa-sheet-overlay {
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+.tasa-sheet-overlay.tasa-sheet-visible {
+  opacity: 1;
+}
+.tasa-sheet-overlay.tasa-sheet-overlay-closing {
+  opacity: 0;
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tasa-sheet-panel {
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.tasa-sheet-panel.tasa-sheet-visible {
+  transform: translateY(0);
+}
+.tasa-sheet-panel.tasa-sheet-panel-closing {
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus latente: botón Tasa de cambio (visible en modo claro y oscuro) */
+@keyframes tasa-cta-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.85), 0 0 0 4px rgba(22, 163, 74, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(10, 10, 10, 0.4), 0 0 0 10px rgba(22, 163, 74, 0.12);
+  }
+}
+
+.tasa-cta-focus {
+  animation: tasa-cta-glow 2s ease-in-out infinite;
+}
+
+.tasa-cta-focus:hover,
+.tasa-cta-focus:focus-visible {
+  animation: none;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.6);
+}
+
+/* Scrollbar moderna (estilo MUI): fina, redondeada */
+.scrollbar-modern {
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+
+/* Firefox */
+.scrollbar-modern {
+  scrollbar-color: #525252 transparent;
+}
+
+.theme-light .scrollbar-modern {
+  scrollbar-color: #d4d4d4 transparent;
+}
+
+/* Chrome, Safari, Edge */
+.scrollbar-modern::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-modern::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.scrollbar-modern::-webkit-scrollbar-thumb {
+  background: #525252;
+  border-radius: 4px;
+}
+
+.scrollbar-modern::-webkit-scrollbar-thumb:hover {
+  background: #737373;
+}
+
+.theme-light .scrollbar-modern::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+}
+
+.theme-light .scrollbar-modern::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+/* Scrollbar moderna en el scroll principal de la página */
+html {
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  scrollbar-color: #525252 transparent;
+}
+
+html.theme-light {
+  scrollbar-color: #d4d4d4 transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #525252;
+  border-radius: 4px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #737373;
+}
+
+html.theme-light::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+}
+
+html.theme-light::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}

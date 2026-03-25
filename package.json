@@ -1,0 +1,39 @@
+{
+  "name": "catalogo-mjeimports",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/generate-og-image.mjs && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "download-favicon": "node scripts/download-favicon.mjs"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.0.3",
+    "@astrojs/react": "^4.4.2",
+    "@jsquash/webp": "^1.0.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.17.1",
+    "axios": "^1.13.4",
+    "clsx": "^2.1.1",
+    "jpeg-js": "^0.4.4",
+    "lucide-react": "^0.577.0",
+    "pngjs": "^7.0.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.33.5"
+  },
+  "pnpm": {
+    "overrides": {
+      "zod": "3.25.76"
+    }
+  }
+}
