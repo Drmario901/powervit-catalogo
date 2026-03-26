@@ -543,10 +543,12 @@ export default function Catalog({ data: initialData, initialSearch, initialOfert
   }, []);
 
   const findProductById = useCallback(
-    (id: number): ProductoCatalogo | null => {
-      const inCatalog = data.productos?.find((p) => p.id === id);
+    (id: number | string): ProductoCatalogo | null => {
+      const normalizedId = Number(id);
+      if (!Number.isFinite(normalizedId)) return null;
+      const inCatalog = data.productos?.find((p) => Number(p.id) === normalizedId);
       if (inCatalog) return inCatalog;
-      const inOfertas = ofertasProductos.find((p) => p.id === id);
+      const inOfertas = ofertasProductos.find((p) => Number(p.id) === normalizedId);
       return inOfertas ?? null;
     },
     [data.productos, ofertasProductos]
@@ -685,27 +687,65 @@ export default function Catalog({ data: initialData, initialSearch, initialOfert
     updateCatalogUrl(q, true);
   }, [fetchCatalog, updateCatalogUrl]);
 
+  const openProductInViewer = useCallback(
+    (product: ProductoCatalogo) => {
+      openViewer(
+        product.imagen_url || LOGO_URL,
+        product.producto,
+        product.producto,
+        formatBs(product.venta_bs),
+        formatBcv(product.venta_bcv),
+        product.status,
+        product
+      );
+    },
+    [openViewer]
+  );
+
   const handleChatOpenProduct = useCallback(
-    (id: number, nombre: string) => {
+    async (id: number, nombre: string, productFromChat?: ChatProductFromApi) => {
       const p = findProductById(id);
       if (p) {
-        openViewer(
-          p.imagen_url || "",
-          p.producto,
-          p.producto,
-          formatBs(p.venta_bs),
-          formatBcv(p.venta_bcv),
-          p.status,
-          p
-        );
-      } else {
-        setQuery(nombre);
-        scrollCatalogToTop();
-        fetchCatalog(1, nombre);
-        updateCatalogUrl(nombre, true);
+        openProductInViewer(p);
+        return;
       }
+
+      if (productFromChat) {
+        try {
+          // Producto sugerido por LLM puede no estar aún en la página actual (scroll infinito).
+          // Hacemos fetch puntual por nombre y abrimos por ID para obtener imagen real.
+          const remote = await fetchCatalogoFromServer(1, 80, productFromChat.nombre || nombre);
+          const remoteProduct =
+            remote.productos?.find((item) => Number(item.id) === Number(productFromChat.id)) ??
+            remote.productos?.find((item) => item.producto.trim().toLowerCase() === (productFromChat.nombre || nombre).trim().toLowerCase());
+          if (remoteProduct) {
+            openProductInViewer(remoteProduct);
+            return;
+          }
+        } catch {
+          // Fallback abajo
+        }
+
+        const syntheticProduct: ProductoCatalogo = {
+          id: Number(productFromChat.id),
+          producto: productFromChat.nombre,
+          venta_bcv: productFromChat.venta_bcv,
+          venta_bs: productFromChat.precio_bs ?? null,
+          status: productFromChat.status,
+          en_oferta: productFromChat.en_oferta,
+          en_camino: productFromChat.en_camino,
+          imagen_url: LOGO_URL,
+        };
+        openProductInViewer(syntheticProduct);
+        return;
+      }
+
+      setQuery(nombre);
+      scrollCatalogToTop();
+      fetchCatalog(1, nombre);
+      updateCatalogUrl(nombre, true);
     },
-    [findProductById, openViewer, scrollCatalogToTop, fetchCatalog, updateCatalogUrl]
+    [findProductById, openProductInViewer, scrollCatalogToTop, fetchCatalog, updateCatalogUrl]
   );
 
   const handleChatAddToCart = useCallback(
@@ -1725,7 +1765,7 @@ export default function Catalog({ data: initialData, initialSearch, initialOfert
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="viewer-panel flex w-full max-h-[100dvh] flex-col overflow-y-auto overflow-x-hidden rounded-t-[1.35rem] border md:h-[min(88vh,820px)] md:max-h-[min(88vh,820px)] md:flex-row md:overflow-hidden md:rounded-3xl"
+              className="viewer-panel flex min-h-[72dvh] w-full max-h-[100dvh] flex-col overflow-y-auto overflow-x-hidden rounded-t-[1.35rem] border sm:min-h-[76dvh] md:h-[min(88vh,820px)] md:min-h-0 md:max-h-[min(88vh,820px)] md:flex-row md:overflow-hidden md:rounded-3xl"
               style={{
                 backgroundColor: "var(--card-bg)",
                 borderColor: "var(--card-border)",

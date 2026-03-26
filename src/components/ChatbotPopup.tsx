@@ -102,7 +102,7 @@ export interface ChatProductFromApi {
 }
 
 export interface ChatbotPopupProps {
-  onOpenProduct?: (id: number, nombre: string) => void;
+  onOpenProduct?: (id: number, nombre: string, productFromChat?: ChatProductFromApi) => void;
   /** (id, nombre, productFromChat?) — si se pasa productFromChat y el producto no está en catálogo/ofertas, se usa para añadir igual */
   onAddToCart?: (id: number, nombre: string, productFromChat?: ChatProductFromApi) => void;
   /** IDs de productos que ya están en el carrito (para mostrar "En el carrito" y permitir quitar) */
@@ -588,8 +588,10 @@ const ChatbotPopup = forwardRef<ChatbotPopupHandle, ChatbotPopupProps>(function 
                                       <button
                                         type="button"
                                         onClick={() => {
-                                          onOpenProduct(p.id, p.nombre);
                                           handleClosePanel();
+                                          requestAnimationFrame(() => {
+                                            onOpenProduct(p.id, p.nombre, p);
+                                          });
                                         }}
                                         className="inline-flex h-8 items-center rounded-md border px-3 text-xs font-medium transition-colors hover:bg-[var(--input-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-green)] focus:ring-offset-2 focus:ring-offset-[var(--card-bg)]"
                                         style={{
