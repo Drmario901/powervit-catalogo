@@ -29,23 +29,23 @@
 /* Tema oscuro por defecto (evita flash antes de hidratación) */
 :root,
 .theme-dark {
-  --page-bg: #0a0a0a;
-  --card-bg: #141414;
-  --card-border: #2a2a2a;
-  --card-oferta-bg: #0f1712;
+  --page-bg: #101214;
+  --card-bg: #181b1f;
+  --card-border: #31363d;
+  --card-oferta-bg: #141b17;
   --card-oferta-border: rgba(22, 163, 74, 0.45);
   --card-oferta-bcv: #d4d4d4;
   --titulo-oferta-bg: rgba(22, 163, 74, 0.12);
   --titulo-oferta-text: #86efac;
   --text-primary: #fafafa;
-  --text-secondary: #a3a3a3;
-  --header-bg: #0f0f0f;
-  --input-bg: #1a1a1a;
-  --input-border: #404040;
-  --chat-muted-bg: #1a1a1a;
+  --text-secondary: #aeb4bc;
+  --header-bg: #14171b;
+  --input-bg: #20242a;
+  --input-border: #434a53;
+  --chat-muted-bg: #1e2329;
   --chat-foreground: #f5f5f5;
-  --chat-muted-foreground: #a3a3a3;
-  --chat-border: #333333;
+  --chat-muted-foreground: #aeb4bc;
+  --chat-border: #3a4048;
 }
 
 /* Tema claro */
