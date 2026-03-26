@@ -1,5 +1,5 @@
 {
-  "name": "catalogo-mjeimports",
+  "name": "powervit-catalogo-2",
   "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2026-02-15",
   "compatibility_flags": ["nodejs_compat"],
