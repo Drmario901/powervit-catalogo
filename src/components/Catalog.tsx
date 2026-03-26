@@ -1951,12 +1951,12 @@ export default function Catalog({ data: initialData, initialSearch, initialOfert
 
                       <div className="viewer-mobile-chat viewer-chat-strip viewer-detail-reveal viewer-stagger-4 flex flex-col gap-2 md:border-t md:pt-4" style={{ borderColor: "var(--card-border)" }}>
                         <p className="hidden text-xs leading-relaxed md:block md:text-sm" style={{ color: "var(--text-secondary)" }}>
-                          ¿Dudas sobre el producto? Pregunta por dosis o disponibilidad en el chat.
+                          Obtén una explicación breve sobre para qué sirve este producto.
                         </p>
                         <button
                           type="button"
                           onClick={() => {
-                            chatPopupRef.current?.openAndSendMessage(`¿Para qué sirve ${viewer.product!.producto}? ¿Qué dosis recomiendan?`);
+                            chatPopupRef.current?.openAndSendMessage(`¿Para qué sirve ${viewer.product!.producto}?`);
                             closeViewer();
                           }}
                           className="viewer-action-btn flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-dashed px-3 py-2.5 text-sm font-medium transition hover:opacity-90 md:min-h-[46px] md:rounded-xl md:border-2 md:border-solid md:py-2.5"
@@ -1967,7 +1967,7 @@ export default function Catalog({ data: initialData, initialSearch, initialOfert
                           }}
                         >
                           <MessageCircleIcon className="h-[1.125rem] w-[1.125rem] shrink-0 md:h-5 md:w-5" />
-                          Preguntar en el chat
+                          Ver información del producto
                         </button>
                       </div>
                     </div>
